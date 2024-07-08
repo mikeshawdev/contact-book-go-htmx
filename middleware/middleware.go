@@ -6,11 +6,7 @@ import (
 
 func MarkHtmxRequests(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		if c.Request().Header.Get("HX-Request") == "true" {
-			c.Set("htmx-request", true)
-		} else {
-			c.Set("htmx-request", false)
-		}
+		c.Set("htmx-request", c.Request().Header.Get("HX-Request") == "true")
 
 		return next(c)
 	}

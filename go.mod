@@ -3,6 +3,7 @@ module github.com/mikeshawdev/contact-book-go-htmx
 go 1.22.5
 
 require (
+	github.com/a-h/templ v0.2.747
 	github.com/labstack/echo/v4 v4.12.0
 	github.com/labstack/gommon v0.4.2
 	github.com/matoous/go-nanoid/v2 v2.1.0

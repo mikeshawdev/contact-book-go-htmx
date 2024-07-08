@@ -10,8 +10,8 @@ import (
 	echoMiddleware "github.com/labstack/echo/v4/middleware"
 	"github.com/labstack/gommon/log"
 	gonanoid "github.com/matoous/go-nanoid/v2"
+	"github.com/mikeshawdev/contact-book-go-htmx/components"
 	"github.com/mikeshawdev/contact-book-go-htmx/middleware"
-	"github.com/mikeshawdev/contact-book-go-htmx/templates"
 )
 
 type PageData struct {
@@ -21,7 +21,6 @@ type PageData struct {
 func main() {
 	e := echo.New()
 	e.Logger.SetLevel(log.INFO)
-	e.Renderer = templates.TemplateRenderer()
 
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt)
 	defer stop()
@@ -50,22 +49,20 @@ func main() {
 	e.Static("/assets", "public/assets")
 
 	e.GET("/", func(c echo.Context) error {
-		return c.Render(http.StatusOK, "contacts.html", PageData{PageName: "contacts"})
+		return components.Render(c, http.StatusOK, components.Contacts())
 	})
 
 	e.GET("/new", func(c echo.Context) error {
-		return c.Render(http.StatusOK, "new-contact.html", PageData{PageName: "new-contact"})
+		return components.Render(c, http.StatusOK, components.NewContact())
 	})
 
 	e.GET("/settings", func(c echo.Context) error {
-		return c.Render(http.StatusOK, "settings.html", PageData{PageName: "settings"})
+		return components.Render(c, http.StatusOK, components.Settings())
 	})
 
-	go func() {
-		if err := e.Start(":1323"); err != nil && err != http.ErrServerClosed {
-			e.Logger.Fatal("shutting down the server")
-		}
-	}()
+	if err := e.Start(":1323"); err != nil && err != http.ErrServerClosed {
+		e.Logger.Fatal("shutting down the server")
+	}
 
 	<-ctx.Done()
 	if err := e.Shutdown(ctx); err != nil {
