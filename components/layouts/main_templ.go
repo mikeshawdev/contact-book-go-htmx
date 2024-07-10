@@ -10,7 +10,7 @@ import templruntime "github.com/a-h/templ/runtime"
 
 import "github.com/mikeshawdev/contact-book-go-htmx/components/shared"
 
-func Main(currentPageName string) templ.Component {
+func Main(pageName string, title string) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
@@ -28,11 +28,24 @@ func Main(currentPageName string) templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><title>Temp</title><link rel=\"apple-touch-icon\" sizes=\"180x180\" href=\"/assets/images/apple-touch-icon.png\"><link rel=\"icon\" type=\"image/png\" sizes=\"32x32\" href=\"/assets/images/favicon-32x32.png\"><link rel=\"icon\" type=\"image/png\" sizes=\"16x16\" href=\"/assets/images/favicon-16x16.png\"><link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/flowbite@2.4.1/dist/flowbite.min.css\"><link rel=\"stylesheet\" href=\"/assets/styles/main.css\"><script src=\"https://cdn.jsdelivr.net/npm/flowbite@2.4.1/dist/flowbite.min.js\" defer></script><script src=\"https://unpkg.com/htmx.org\" defer></script><script src=\"/assets/scripts/main.js\" defer></script></head><body hx-boost=\"true\" class=\"antialiased\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><title>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = shared.Navigation(currentPageName).Render(ctx, templ_7745c5c3_Buffer)
+		var templ_7745c5c3_Var2 string
+		templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinStringErrs(title)
+		if templ_7745c5c3_Err != nil {
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/layouts/main.templ`, Line: 13, Col: 17}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var2))
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(" - ContactBook</title><link rel=\"apple-touch-icon\" sizes=\"180x180\" href=\"/assets/images/apple-touch-icon.png\"><link rel=\"icon\" type=\"image/png\" sizes=\"32x32\" href=\"/assets/images/favicon-32x32.png\"><link rel=\"icon\" type=\"image/png\" sizes=\"16x16\" href=\"/assets/images/favicon-16x16.png\"><link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/flowbite@2.4.1/dist/flowbite.min.css\"><link rel=\"stylesheet\" href=\"/assets/styles/main.css\"><script src=\"https://cdn.jsdelivr.net/npm/flowbite@2.4.1/dist/flowbite.min.js\" defer></script><script src=\"https://unpkg.com/htmx.org\" defer></script><script src=\"/assets/scripts/main.js\" defer></script></head><body hx-boost=\"true\" class=\"antialiased\">")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = shared.Navigation(pageName).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

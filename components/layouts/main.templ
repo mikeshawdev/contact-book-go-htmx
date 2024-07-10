@@ -2,7 +2,7 @@ package layouts
 
 import "github.com/mikeshawdev/contact-book-go-htmx/components/shared"
 
-templ Main(currentPageName string) {
+templ Main(pageName string, title string) {
 	<!DOCTYPE html>
 	<html lang="en">
 		<head>
@@ -10,7 +10,7 @@ templ Main(currentPageName string) {
 			<meta http-equiv="X-UA-Compatible" content="IE=edge">
 			<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-			<title>Temp</title>
+			<title>{ title } - ContactBook</title>
 
 			<link rel="apple-touch-icon" sizes="180x180" href="/assets/images/apple-touch-icon.png"/>
 			<link rel="icon" type="image/png" sizes="32x32" href="/assets/images/favicon-32x32.png"/>
@@ -24,7 +24,7 @@ templ Main(currentPageName string) {
 			<script src="/assets/scripts/main.js" defer></script>
 		</head>
 		<body hx-boost="true" class="antialiased">
-			@shared.Navigation(currentPageName)
+			@shared.Navigation(pageName)
 
 			<div class="max-w-screen-lg mx-auto p-4">
 				{ children... }
