@@ -1,0 +1,21 @@
+package views
+
+import (
+	"github.com/mikeshawdev/contact-book-go-htmx/models"
+	"github.com/mikeshawdev/contact-book-go-htmx/views/components"
+	"github.com/mikeshawdev/contact-book-go-htmx/views/layouts"
+)
+
+templ Contacts(contacts models.Contacts, quickContactAddFormData models.QuickContactAddFormData) {
+	@layouts.Main("contacts", "Contacts") {
+		<h2 class="mb-4 text-2xl font-bold dark:text-white">Quick add</h2>
+		@components.QuickContactAddForm(quickContactAddFormData, nil)
+		<hr class="h-px mb-8 bg-gray-200 border-0 dark:bg-gray-700"/>
+		<h1 class="sr-only">Contacts</h1>
+		<div class="grid gap-8 mb-6 lg:mb-16 md:grid-cols-2" id="contacts">
+			for _, contact := range contacts {
+				@components.Contact(contact)
+			}
+		</div>
+	}
+}

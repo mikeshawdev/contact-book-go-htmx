@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", (event) => {
   document.body.addEventListener('htmx:beforeSwap', function (event) {
-    if (event.detail.xhr.status === 422) {
+    if (event.detail.xhr.status === 400 || event.detail.xhr.status === 422) {
       // allow 422 responses to swap as we are using this as a signal that
       // a form was submitted with bad data and want to rerender with the
       // errors

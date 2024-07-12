@@ -11,14 +11,14 @@ import (
 	echoMiddleware "github.com/labstack/echo/v4/middleware"
 	"github.com/labstack/gommon/log"
 	gonanoid "github.com/matoous/go-nanoid/v2"
-	"github.com/mikeshawdev/contact-book-go-htmx/components"
-	errorPages "github.com/mikeshawdev/contact-book-go-htmx/components/errors"
 	"github.com/mikeshawdev/contact-book-go-htmx/middleware"
+	"github.com/mikeshawdev/contact-book-go-htmx/models"
+	"github.com/mikeshawdev/contact-book-go-htmx/views"
+	"github.com/mikeshawdev/contact-book-go-htmx/views/components"
+	errorPages "github.com/mikeshawdev/contact-book-go-htmx/views/errors"
 )
 
-type PageData struct {
-	PageName string
-}
+var contacts models.Contacts
 
 func main() {
 	app := echo.New()
@@ -26,13 +26,7 @@ func main() {
 
 	app.Use(echoMiddleware.RequestIDWithConfig(echoMiddleware.RequestIDConfig{
 		Generator: func() string {
-			id, err := gonanoid.New()
-
-			if err != nil {
-				panic(err)
-			}
-
-			return id
+			return gonanoid.Must()
 		},
 	}))
 
@@ -41,32 +35,55 @@ func main() {
 	app.Use(echoMiddleware.Secure())
 	app.Use(echoMiddleware.Gzip())
 	app.Use(echoMiddleware.RemoveTrailingSlash())
-	app.Use(echoMiddleware.CSRF())
 	app.Use(echoMiddleware.CORS())
 	app.Use(middleware.MarkHtmxRequests)
 
 	app.Static("/assets", "public/assets")
 
 	app.GET("/", func(c echo.Context) error {
-		return components.Render(c, http.StatusOK, components.Contacts())
+		formData := models.QuickContactAddFormData{
+			Name:  "",
+			Email: "",
+		}
+
+		return views.Render(c, http.StatusOK, views.Contacts(contacts, formData))
 	})
 
 	app.GET("/new", func(c echo.Context) error {
-		return components.Render(c, http.StatusOK, components.NewContact())
+		return views.Render(c, http.StatusOK, views.NewContact())
 	})
 
 	app.GET("/settings", func(c echo.Context) error {
-		return components.Render(c, http.StatusOK, components.Settings())
+		return views.Render(c, http.StatusOK, views.Settings())
+	})
+
+	app.POST("/contacts", func(c echo.Context) error {
+		formData := models.QuickContactAddFormData{
+			Name:  c.FormValue("name"),
+			Email: c.FormValue("email"),
+		}
+
+		errors := formData.Validate()
+
+		if len(errors) > 0 {
+			return views.Render(c, http.StatusBadRequest, components.QuickContactAddForm(formData, errors))
+		}
+
+		contact := models.Contact{}.New(formData.Name, formData.Email)
+		contacts = contacts.Add(contact)
+
+		views.Render(c, http.StatusCreated, components.QuickContactAddForm(models.QuickContactAddFormData{}, nil))
+		return views.Render(c, http.StatusCreated, components.OobContact(contact))
 	})
 
 	app.RouteNotFound("*", func(c echo.Context) error {
-		return components.Render(c, http.StatusNotFound, errorPages.NotFound())
+		return views.Render(c, http.StatusNotFound, errorPages.NotFound())
 	})
 
 	app.HTTPErrorHandler = func(err error, c echo.Context) {
 		c.Logger().Error(err)
 
-		components.Render(c, http.StatusNotFound, errorPages.InternalServerError())
+		views.Render(c, http.StatusNotFound, errorPages.InternalServerError())
 	}
 
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt)

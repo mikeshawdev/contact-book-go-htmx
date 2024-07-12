@@ -8,7 +8,7 @@ package errors
 import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
-import "github.com/mikeshawdev/contact-book-go-htmx/components/layouts"
+import "github.com/mikeshawdev/contact-book-go-htmx/views/layouts"
 
 func InternalServerError() templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {

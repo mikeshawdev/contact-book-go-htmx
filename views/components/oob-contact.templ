@@ -1,0 +1,9 @@
+package components
+
+import "github.com/mikeshawdev/contact-book-go-htmx/models"
+
+templ OobContact(contact models.Contact) {
+	<div id="contacts" hx-swap-oob="afterbegin">
+		@Contact(contact)
+	</div>
+}

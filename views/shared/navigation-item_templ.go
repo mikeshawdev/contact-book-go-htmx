@@ -57,7 +57,7 @@ func NavigationItem(url string, name string, content string, currentPageName str
 		var templ_7745c5c3_Var3 string
 		templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(content)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/shared/navigation-item.templ`, Line: 12, Col: 11}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/shared/navigation-item.templ`, Line: 12, Col: 11}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 		if templ_7745c5c3_Err != nil {
