@@ -7,6 +7,7 @@ import (
 	"os/signal"
 	"time"
 
+	"github.com/a-h/templ"
 	"github.com/labstack/echo/v4"
 	echoMiddleware "github.com/labstack/echo/v4/middleware"
 	"github.com/labstack/gommon/log"
@@ -46,15 +47,15 @@ func main() {
 			Email: "",
 		}
 
-		return views.Render(c, http.StatusOK, views.Contacts(contacts, formData))
+		return views.Render(c, http.StatusOK, []templ.Component{views.Contacts(contacts, formData)})
 	})
 
 	app.GET("/new", func(c echo.Context) error {
-		return views.Render(c, http.StatusOK, views.NewContact())
+		return views.Render(c, http.StatusOK, []templ.Component{views.NewContact()})
 	})
 
 	app.GET("/settings", func(c echo.Context) error {
-		return views.Render(c, http.StatusOK, views.Settings())
+		return views.Render(c, http.StatusOK, []templ.Component{views.Settings()})
 	})
 
 	app.POST("/contacts", func(c echo.Context) error {
@@ -66,24 +67,30 @@ func main() {
 		errors := formData.Validate()
 
 		if len(errors) > 0 {
-			return views.Render(c, http.StatusBadRequest, components.QuickContactAddForm(formData, errors))
+			return views.Render(c, http.StatusBadRequest, []templ.Component{
+				components.QuickContactAddForm(formData, errors),
+			})
 		}
 
 		contact := models.Contact{}.New(formData.Name, formData.Email)
 		contacts = contacts.Add(contact)
 
-		views.Render(c, http.StatusCreated, components.QuickContactAddForm(models.QuickContactAddFormData{}, nil))
-		return views.Render(c, http.StatusCreated, components.OobContact(contact))
+		return views.Render(
+			c, http.StatusCreated,
+			[]templ.Component{
+				components.QuickContactAddForm(models.QuickContactAddFormData{}, nil),
+				components.OobContact(contact),
+			})
 	})
 
 	app.RouteNotFound("*", func(c echo.Context) error {
-		return views.Render(c, http.StatusNotFound, errorPages.NotFound())
+		return views.Render(c, http.StatusNotFound, []templ.Component{errorPages.NotFound()})
 	})
 
 	app.HTTPErrorHandler = func(err error, c echo.Context) {
 		c.Logger().Error(err)
 
-		views.Render(c, http.StatusNotFound, errorPages.InternalServerError())
+		views.Render(c, http.StatusNotFound, []templ.Component{errorPages.InternalServerError()})
 	}
 
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt)
