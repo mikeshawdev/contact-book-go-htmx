@@ -1,0 +1,14 @@
+package components
+
+import "github.com/mikeshawdev/contact-book-go-htmx/models"
+
+templ ContactListItem(contact models.Contact) {
+	<div class="items-center bg-gray-50 rounded-lg shadow sm:flex dark:bg-gray-800 dark:border-gray-700">
+		<div class="w-full p-5">
+			<h3>
+				<a class="text-xl font-bold tracking-tight text-gray-900 dark:text-white hover:text-primary-700 dark:hover:text-primary-400" href={ templ.URL("/contacts/" + contact.Id) }>{ contact.Name }</a>
+			</h3>
+			<span class="text-gray-500 dark:text-gray-400">{ contact.Email }</span>
+		</div>
+	</div>
+}

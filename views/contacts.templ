@@ -14,7 +14,7 @@ templ Contacts(contacts models.Contacts, quickContactAddFormData models.QuickCon
 		<h1 class="sr-only">Contacts</h1>
 		<div class="grid gap-8 mb-6 lg:mb-16 md:grid-cols-2" id="contacts">
 			for _, contact := range contacts {
-				@components.Contact(contact)
+				@components.ContactListItem(contact)
 			}
 		</div>
 	}

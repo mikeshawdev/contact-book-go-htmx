@@ -19,7 +19,7 @@ import (
 	errorPages "github.com/mikeshawdev/contact-book-go-htmx/views/errors"
 )
 
-var contacts models.Contacts
+var contacts models.Contacts = models.Contacts{}.New()
 
 func main() {
 	app := echo.New()
@@ -41,6 +41,8 @@ func main() {
 
 	app.Static("/assets", "public/assets")
 
+	contacts.Add(models.Contact{Id: "1", Name: "John Doe", Email: "john@example.com"})
+
 	app.GET("/", func(c echo.Context) error {
 		formData := models.QuickContactAddFormData{
 			Name:  "",
@@ -58,6 +60,16 @@ func main() {
 		return views.Render(c, http.StatusOK, []templ.Component{views.Settings()})
 	})
 
+	app.GET("/contacts/:id", func(c echo.Context) error {
+		contact, found := contacts[c.Param("id")]
+
+		if !found {
+			return views.Render(c, http.StatusNotFound, []templ.Component{errorPages.NotFound()})
+		}
+
+		return views.Render(c, http.StatusOK, []templ.Component{views.Contact(contact)})
+	})
+
 	app.POST("/contacts", func(c echo.Context) error {
 		formData := models.QuickContactAddFormData{
 			Name:  c.FormValue("name"),
@@ -73,13 +85,13 @@ func main() {
 		}
 
 		contact := models.Contact{}.New(formData.Name, formData.Email)
-		contacts = contacts.Add(contact)
+		contacts.Add(contact)
 
 		return views.Render(
 			c, http.StatusCreated,
 			[]templ.Component{
 				components.QuickContactAddForm(models.QuickContactAddFormData{}, nil),
-				components.OobContact(contact),
+				components.OobContactListItem(contact),
 			})
 	})
 
@@ -90,7 +102,7 @@ func main() {
 	app.HTTPErrorHandler = func(err error, c echo.Context) {
 		c.Logger().Error(err)
 
-		views.Render(c, http.StatusNotFound, []templ.Component{errorPages.InternalServerError()})
+		views.Render(c, http.StatusInternalServerError, []templ.Component{errorPages.InternalServerError()})
 	}
 
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt)

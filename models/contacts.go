@@ -10,16 +10,20 @@ type Contact struct {
 
 func (c Contact) New(name string, email string) Contact {
 	return Contact{
-		Id:    gonanoid.Must(),
+		Id:    gonanoid.MustGenerate("0123456789abcdefghijklmnopqrstuvwxyz", 16),
 		Name:  name,
 		Email: email,
 	}
 }
 
-type Contacts []Contact
+type Contacts map[string]Contact
 
-func (c Contacts) Add(contact Contact) Contacts {
-	return append(c, contact)
+func (c Contacts) New() Contacts {
+	return make(Contacts)
+}
+
+func (c Contacts) Add(contact Contact) {
+	c[contact.Id] = contact
 }
 
 type QuickContactAddFormData struct {

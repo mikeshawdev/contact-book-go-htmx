@@ -1,0 +1,11 @@
+package views
+
+import "github.com/mikeshawdev/contact-book-go-htmx/models"
+import "github.com/mikeshawdev/contact-book-go-htmx/views/layouts"
+
+templ Contact(contact models.Contact) {
+	@layouts.Main("contacts", contact.Name) {
+    <h1 class="text-3xl font-bold">{ contact.Name }</h1>
+    <p class="text-sm text-gray-500">{ contact.Email }</p>
+  }
+}
